@@ -3,8 +3,86 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import Home from './components/Home/Home';
+import About from './components/About/About';
+import Contact from './components/Contact/Contact';
+import Header from './components/Header/Header';
+import Root from './components/Root/Root';
+import Friends from './components/Friends/Friends';
+import FriendDetail from './components/FriendDetail/FriendDetail';
+import Posts from './components/Posts/Posts';
+import Post from './components/Post/Post';
+import PostDetail from './components/PostDetail/PostDetail';
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Home></Home>
+//   },
+//   {
+//     path: 'about',
+//     element: <About></About>
+//   },
+//   {
+//     path: 'contact',
+//     element: <Contact></Contact>  
+//   }
+// ]);
+
+// use nested route
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home></Home>,
+    children: [
+      {
+        path: '/',
+        element: <Root></Root>
+      },
+      {
+        path: 'friends',
+        element: <Friends></Friends>,
+        loader: () => fetch('https://jsonplaceholder.typicode.com/users')
+      },
+      {
+        path: 'friend/:friendId',
+        element: <FriendDetail></FriendDetail>,
+        loader: ({params}) => fetch(`https://jsonplaceholder.typicode.com/users/${params.friendId}`)
+        
+      },
+      {
+        path: 'posts',
+        element: <Posts></Posts>,
+        loader: () => fetch('https://jsonplaceholder.typicode.com/posts')
+      },
+      {
+        path: 'post/:postId',
+        element: <PostDetail></PostDetail>,
+        loader: ({params}) => fetch(`https://jsonplaceholder.typicode.com/posts/${params.postId}`)        
+      },
+      {
+        path: 'about',
+        element: <About></About>
+      },
+      {
+        path: 'contact',
+        element: <Contact></Contact>
+      },
+      {
+        path: '*',
+        element: <h1>404 not found</h1>
+      }
+    ]
+  },
+]);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>,
 )
